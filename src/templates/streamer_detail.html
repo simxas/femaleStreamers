@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load video_id %}
 
 {% block head_title %}
     {{ instance.title }} | {{ block.super }}
@@ -7,15 +8,19 @@
 {% block content %}
     <div class="row">
         <div class="col-lg-8">
-            <!-- Title -->
-            <h1>{{ instance.display_name }}</h1>
             <hr/>
             {% if instance.profile_banner %}
                 <img src="{{ instance.profile_banner }}" class="img-responsive" />
             {% endif %}
             <hr>
+            <center>
+                <h1>{{ instance.display_name }}</h1>
+            </center>
+            </br>
             {% if instance.logo %}
-                <img src="{{ instance.logo }}" class="img-responsive" />
+                <center>
+                    <img src="{{ instance.logo }}" class="img-responsive" />
+                </center>
             {% endif %}
             <hr>
             <p>Language: {{ instance.language }}</p>
@@ -37,13 +42,28 @@
                     No
                 {% endif %}
             </p>
-            <!-- Post Content -->
-            <label>Videos:</label>
-            <div>
-                <p>
-                    {{ instance.description|safe }}
-                </p>
-            </div>
+            <!-- Streamer Videos -->
+            <label>Latest Videos:</label>
+            </br>
+            {% for obj in r %}
+                <h3>{{ obj.game }}</h3>
+                <div>
+                    <div id="{{ obj.broadcast_id }}"></div>
+                    <script type="text/javascript">
+                        var options = {
+                            width: 854,
+                            height: 480,
+                            autoplay: false,
+                            // channel: "{{ instance.name }}",
+                            video: "{{ obj|underscore:'_id' }}"
+                        };
+                        var player = new Twitch.Player("{{ obj.broadcast_id }}", options);
+                        player.setVolume(0.5);
+                    </script>
+                </div>
+
+                <hr />
+            {% endfor %}
 
             <hr/>
             <!-- Facebook like and share -->

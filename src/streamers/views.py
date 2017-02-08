@@ -47,8 +47,14 @@ def streamers_list(request):
 def streamer_detail(request, slug):
     instance = get_object_or_404(Streamer, slug=slug)
 
+    # getting channel videos
+    url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=3".format(instance.name)
+    headers = {"Client-ID": instance.client_id}
+    r = requests.get(url, headers=headers).json()
+    # print(r["videos"][0])
     context = {
         "instance": instance,
+        "r": r["videos"],
     }
     return render(request, "streamer_detail.html", context)
 
@@ -59,32 +65,33 @@ def create_streamer(request):
     form = StreamerForm(request.POST or None, request.FILES or None)
 
     if form.is_valid():
-        name = form.cleaned_data['name']
-        draft = form.cleaned_data['draft']
-        publish = form.cleaned_data['publish']
-        client_id = form.cleaned_data['client_id']
+        name = form.cleaned_data["name"]
+        draft = form.cleaned_data["draft"]
+        publish = form.cleaned_data["publish"]
+        client_id = form.cleaned_data["client_id"]
 
         url = 'https://api.twitch.tv/kraken/channels/{0}'.format(name)
-        headers = {'Client-ID': client_id}
+        headers = {"Client-ID": client_id}
         r = requests.get(url, headers=headers).json()
 
         streamer = Streamer(
-            _id = r['_id'],
-            name = r['name'],
-            logo = r['logo'],
-            video_banner = r['video_banner'],
-            profile_banner = r['profile_banner'],
-            url = r['url'],
-            views = r['views'],
-            followers = r['followers'],
-            created_at = r['created_at'],
-            display_name = r['display_name'],
-            language = r['language'],
-            broadcaster_language = r['broadcaster_language'],
-            mature = r['mature'],
-            partner = r['partner'],
+            _id = r["_id"],
+            name = r["name"],
+            logo = r["logo"],
+            video_banner = r["video_banner"],
+            profile_banner = r["profile_banner"],
+            url = r["url"],
+            views = r["views"],
+            followers = r["followers"],
+            created_at = r["created_at"],
+            display_name = r["display_name"],
+            language = r["language"],
+            broadcaster_language = r["broadcaster_language"],
+            mature = r["mature"],
+            partner = r["partner"],
             draft = draft,
-            publish = publish
+            publish = publish,
+            client_id = client_id
         )
         # TooDo check if streamer already exist and if it is then update it insted of creating new
         streamer.save()

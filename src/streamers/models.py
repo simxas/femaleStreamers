@@ -11,6 +11,7 @@ class StreamerManager(models.Manager):
 class Streamer(models.Model):
     _id = models.CharField(max_length=120)
     name = models.CharField(max_length=120)
+    client_id = models.CharField(max_length=120)
     logo = models.URLField()
     video_banner = models.URLField()
     profile_banner = models.URLField()
