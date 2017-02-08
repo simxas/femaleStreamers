@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-9">
             <hr/>
             {% if instance.profile_banner %}
                 <img src="{{ instance.profile_banner }}" class="img-responsive" />
@@ -43,10 +43,11 @@
                 {% endif %}
             </p>
             <!-- Streamer Videos -->
-            <label>Latest Videos:</label>
-            </br>
+            <center>
+                <h3>Latest Video:</h3>
+            </center>
             {% for obj in r %}
-                <h3>{{ obj.game }}</h3>
+                <h4>{{ obj.game }}</h4>
                 <div>
                     <div id="{{ obj.broadcast_id }}"></div>
                     <script type="text/javascript">
@@ -67,12 +68,14 @@
 
             <hr/>
             <!-- Facebook like and share -->
-            <p>
-                <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
-            </p>
+            <center>
+                <p>
+                    <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
+                </p>
 
-            <!-- Facebook comments-->
-            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+                <!-- Facebook comments-->
+                <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+            </center>
 
         </div><!-- col-lg-8 -->
         {% include 'sidebar.html' %}

@@ -10,9 +10,34 @@ from django.utils import timezone
 
 # showing all currently live streamers
 def live_streamers(request):
+    today = timezone.now().date()
+    queryset_list = Streamer.objects.active()
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Streamer.objects.all()
 
+    live_streams = []
+    for streamer in queryset_list:
+        url = "https://api.twitch.tv/kraken/streams/{0}".format(streamer.name)
+        headers = {"Client-ID": streamer.client_id}
+        r = requests.get(url, headers=headers).json()
+        if r["stream"] != None:
+            live_streams.append(streamer)
+
+    paginator = Paginator(live_streams, 6)
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        queryset = paginator.page(page)
+    except PageNotAnInteger:
+        queryset = paginator.page(1)
+    except EmptyPage:
+        queryset = paginator.page(paginator.num_pages)
+    print(queryset)
     context = {
-        "streamers": 'streamers',
+        "streamers": queryset,
+        "title": "Currently live streams",
+        "page_request_var": page_request_var,
+        "today": today,
     }
 
     return render(request, "live_streamers.html", context)
@@ -48,7 +73,7 @@ def streamer_detail(request, slug):
     instance = get_object_or_404(Streamer, slug=slug)
 
     # getting channel videos
-    url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=3".format(instance.name)
+    url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=1".format(instance.name)
     headers = {"Client-ID": instance.client_id}
     r = requests.get(url, headers=headers).json()
     # print(r["videos"][0])

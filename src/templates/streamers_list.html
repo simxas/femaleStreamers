@@ -12,7 +12,7 @@
                             <h3>
                                 <a href="{{ obj.get_absolute_url }}">{{ obj.display_name }}</a>
                             </h3>
-
+                            {{obj.stream_info}}
                             {% if obj.logo %}
                                 <a href="{{ obj.get_absolute_url }}">
                                     <img src="{{ obj.logo }}" class="img-responsive" />
