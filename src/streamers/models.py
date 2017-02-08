@@ -32,7 +32,7 @@ class Streamer(models.Model):
     objects = StreamerManager()
 
     def __str__(self):
-        return self.title
+        return self.name
 
     def get_absolute_url(self):
         return reverse("streamers:detail", kwargs={"slug": self.slug})
@@ -41,7 +41,7 @@ class Streamer(models.Model):
         ordering = ["-timestamp", "-updated"]
 
 def create_slug(instance, new_slug=None):
-    slug = slugify(instance.title)
+    slug = slugify(instance.name)
     if new_slug is not None:
         slug = new_slug
     qs = Streamer.objects.filter(slug=slug).order_by("-id")
