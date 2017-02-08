@@ -1,1 +1,60 @@
-<h1>Streamer detail page</h1>
+{% extends "base.html" %}
+
+{% block head_title %}
+    {{ instance.title }} | {{ block.super }}
+{% endblock head_title %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Title -->
+            <h1>{{ instance.display_name }}</h1>
+            <hr/>
+            {% if instance.profile_banner %}
+                <img src="{{ instance.profile_banner }}" class="img-responsive" />
+            {% endif %}
+            <hr>
+            {% if instance.logo %}
+                <img src="{{ instance.logo }}" class="img-responsive" />
+            {% endif %}
+            <hr>
+            <p>Language: {{ instance.language }}</p>
+            <p>Views: {{ instance.views }}</p>
+            <p>Followers: {{ instance.followers }}</p>
+            <p>
+                Mature Content:
+                {% if obj.mature %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+            <p>
+                Twitch partner:
+                {% if obj.partner %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+            <!-- Post Content -->
+            <label>Videos:</label>
+            <div>
+                <p>
+                    {{ instance.description|safe }}
+                </p>
+            </div>
+
+            <hr/>
+            <!-- Facebook like and share -->
+            <p>
+                <div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
+            </p>
+
+            <!-- Facebook comments-->
+            <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+
+        </div><!-- col-lg-8 -->
+        {% include 'sidebar.html' %}
+    </div><!-- main row -->
+{% endblock content %}

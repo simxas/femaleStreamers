@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import StreamerForm
 from .models import Streamer
 import requests
 import json
+from django.utils import timezone
 
+# showing all currently live streamers
 def live_streamers(request):
 
     context = {
@@ -13,14 +17,42 @@ def live_streamers(request):
 
     return render(request, "live_streamers.html", context)
 
-def streamer_detail(request, slug):
+# showing all streamers
+def streamers_list(request):
+    today = timezone.now().date()
+    queryset_list = Streamer.objects.active()
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Streamer.objects.all()
+
+    paginator = Paginator(queryset_list, 6)
+    page_request_var = "page"
+    page = request.GET.get(page_request_var)
+    try:
+        queryset = paginator.page(page)
+    except PageNotAnInteger:
+        queryset = paginator.page(1)
+    except EmptyPage:
+        queryset = paginator.page(paginator.num_pages)
 
     context = {
-        "streamer": 'streamer',
+        "streamers": queryset,
+        "title": "All streamers aded to this website",
+        "page_request_var": page_request_var,
+        "today": today,
     }
 
+    return render(request, "streamers_list.html", context)
+
+# showing selected streamer details
+def streamer_detail(request, slug):
+    instance = get_object_or_404(Streamer, slug=slug)
+
+    context = {
+        "instance": instance,
+    }
     return render(request, "streamer_detail.html", context)
 
+# creating new streamer
 def create_streamer(request):
     if not request.user.is_staff or not request.user.is_superuser:
         raise Http404
@@ -54,7 +86,7 @@ def create_streamer(request):
             draft = draft,
             publish = publish
         )
-
+        # TooDo check if streamer already exist and if it is then update it insted of creating new
         streamer.save()
 
     context = {

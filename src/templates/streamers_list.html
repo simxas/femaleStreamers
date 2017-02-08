@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="page-header">{{ title }}</h1>
+    <br />
+    <div id="page" class="fluid-container">
+        <div id="content" class="col-xs-12 col-sm-9">
+            <div class="fluid-container">
+                {% for obj in streamers %}
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="content-box">
+                            <h3>
+                                <a href="{{ obj.get_absolute_url }}">{{ obj.display_name }}</a>
+                            </h3>
+
+                            {% if obj.logo %}
+                                <a href="{{ obj.get_absolute_url }}">
+                                    <img src="{{ obj.logo }}" class="img-responsive" />
+                                </a>
+                            {% endif %}
+                            <br />
+                            <p>Language: {{ obj.language }}</p>
+                            <p>Views: {{ obj.views }}</p>
+                            <p>Followers: {{ obj.followers }}</p>
+                            <p>
+                                Mature Content:
+                                {% if obj.mature %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </p>
+                            <p>
+                                Twitch partner:
+                                {% if obj.partner %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </p>
+                            <br />
+                            <br />
+                            <p>
+                                <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">
+                                    Check details <span class="glyphicon glyphicon-chevron-right"></span>
+                                </a>
+                            </p>
+                            <hr/>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    {% include 'pager.html' %}
+                </div>
+            </div>
+
+        </div>
+        {% include 'sidebar.html' %}
+    </div>
+{% endblock content %}
