@@ -21,7 +21,7 @@ def live_streamers(request):
         headers = {"Client-ID": streamer.client_id}
         r = requests.get(url, headers=headers).json()
         if r["stream"] != None:
-            live_streams.append(streamer)
+            live_streams.append(r)
 
     paginator = Paginator(live_streams, 6)
     page_request_var = "page"
@@ -73,7 +73,7 @@ def streamer_detail(request, slug):
     instance = get_object_or_404(Streamer, slug=slug)
 
     # getting channel videos
-    url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=1".format(instance.name)
+    url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=3".format(instance.name)
     headers = {"Client-ID": instance.client_id}
     r = requests.get(url, headers=headers).json()
     # print(r["videos"][0])

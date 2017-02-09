@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load video_id %}
 
 {% block content %}
     <h1 class="page-header">{{ title }}</h1>
@@ -7,26 +8,35 @@
         <div id="content" class="col-xs-12 col-sm-9">
             <div class="fluid-container">
                 {% for obj in streamers %}
-                    <div class="col-xs-12 col-sm-6 col-md-4">
-                        <div class="content-box">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="content-box-live">
                             <h3>
-                                <a href="{{ obj.get_absolute_url }}">{{ obj.display_name }}</a>
+                                <a href="">{{ obj.stream.channel.display_name }}</a>
                             </h3>
                             <br />
-                            <p>Language: {{ obj.language }}</p>
-                            <p>Views: {{ obj.views }}</p>
-                            <p>Followers: {{ obj.followers }}</p>
+                            <!-- <img src="{{ obj.stream.preview.medium }}" class="img-responsive" /> -->
+                            <div class="intrinsic-container intrinsic-container-4x3">
+                                <div id="{{ obj.stream.channel|underscore:'_id' }}"></div>
+                                <script type="text/javascript">
+                                    var options = {
+                                        // width: 370,
+                                        // height: 208,
+                                        autoplay: false,
+                                        channel: "{{ obj.stream.channel.name }}",
+                                        // video: "{{ obj|underscore:'_id' }}"
+                                    };
+                                    var player = new Twitch.Player("{{ obj.stream.channel|underscore:'_id' }}", options);
+                                    player.setVolume(0.5);
+                                </script>
+                            </div>
+                            <br />
+
+                            <p>Language: {{ obj.stream.channel.language }}</p>
+                            <p>Viewers: {{ obj.stream.viewers }}</p>
+                            <p>Game: {{ obj.stream.game }}</p>
                             <p>
                                 Mature Content:
-                                {% if obj.mature %}
-                                    Yes
-                                {% else %}
-                                    No
-                                {% endif %}
-                            </p>
-                            <p>
-                                Twitch partner:
-                                {% if obj.partner %}
+                                {% if obj.stream.channel.mature %}
                                     Yes
                                 {% else %}
                                     No
@@ -35,7 +45,7 @@
                             <br />
                             <br />
                             <p>
-                                <a class="btn btn-primary" href="{{ obj.get_absolute_url }}">
+                                <a class="btn btn-primary" href="">
                                     Check details <span class="glyphicon glyphicon-chevron-right"></span>
                                 </a>
                             </p>
@@ -45,7 +55,7 @@
                 {% endfor %}
             </div>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     {% include 'pager.html' %}
                 </div>
             </div>
