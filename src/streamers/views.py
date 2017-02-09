@@ -7,6 +7,14 @@ from .models import Streamer
 import requests
 import json
 from django.utils import timezone
+from django.conf import settings
+
+def femalestreamers(request):
+    context = {
+        "title": "Female Streamers",
+    }
+
+    return render(request, "femalestreamers.html", context)
 
 # showing all currently live streamers
 def live_streamers(request):
@@ -18,7 +26,7 @@ def live_streamers(request):
     live_streams = []
     for streamer in queryset_list:
         url = "https://api.twitch.tv/kraken/streams/{0}".format(streamer.name)
-        headers = {"Client-ID": streamer.client_id}
+        headers = {"Client-ID": settings.CLIENT_ID}
         r = requests.get(url, headers=headers).json()
         if r["stream"] != None:
             live_streams.append(r)
@@ -41,6 +49,22 @@ def live_streamers(request):
     }
 
     return render(request, "live_streamers.html", context)
+
+# showing selected live stream
+def stream_detail(request, name):
+    print(name)
+    url = "https://api.twitch.tv/kraken/streams/{0}".format(name)
+    print(url)
+    headers = {"Client-ID": settings.CLIENT_ID}
+    r = requests.get(url, headers=headers).json()
+
+    context = {
+        "title": "Live stream of {0}".format(r["stream"]["channel"]["display_name"]),
+        "instance": r,
+        "name": name,
+    }
+
+    return render(request, "stream_detail.html", context)
 
 # showing all streamers
 def streamers_list(request):
@@ -74,7 +98,7 @@ def streamer_detail(request, slug):
 
     # getting channel videos
     url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=3".format(instance.name)
-    headers = {"Client-ID": instance.client_id}
+    headers = {"Client-ID": settings.CLIENT_ID}
     r = requests.get(url, headers=headers).json()
     # print(r["videos"][0])
     context = {
@@ -93,10 +117,9 @@ def create_streamer(request):
         name = form.cleaned_data["name"]
         draft = form.cleaned_data["draft"]
         publish = form.cleaned_data["publish"]
-        client_id = form.cleaned_data["client_id"]
 
         url = 'https://api.twitch.tv/kraken/channels/{0}'.format(name)
-        headers = {"Client-ID": client_id}
+        headers = {"Client-ID": settings.CLIENT_ID}
         r = requests.get(url, headers=headers).json()
 
         streamer = Streamer(
@@ -116,7 +139,6 @@ def create_streamer(request):
             partner = r["partner"],
             draft = draft,
             publish = publish,
-            client_id = client_id
         )
         # TooDo check if streamer already exist and if it is then update it insted of creating new
         streamer.save()

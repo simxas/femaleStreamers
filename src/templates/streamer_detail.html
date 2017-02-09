@@ -44,12 +44,12 @@
             </p>
             <!-- Streamer Videos -->
             <center>
-                <h3>Latest Video:</h3>
+                <h3>Latest Videos:</h3>
             </center>
             {% for obj in r %}
                 <h4>{{ obj.game }}</h4>
                 <div>
-                    <div id="{{ obj.broadcast_id }}"></div>
+                    <div id="{{ obj|underscore:'_id' }}"></div>
                     <script type="text/javascript">
                         var options = {
                             width: 854,
@@ -58,7 +58,7 @@
                             // channel: "{{ instance.name }}",
                             video: "{{ obj|underscore:'_id' }}"
                         };
-                        var player = new Twitch.Player("{{ obj.broadcast_id }}", options);
+                        var player = new Twitch.Player("{{ obj|underscore:'_id' }}", options);
                         player.setVolume(0.5);
                     </script>
                 </div>
