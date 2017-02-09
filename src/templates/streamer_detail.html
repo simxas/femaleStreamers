@@ -11,17 +11,16 @@
             <hr/>
             {% if instance.profile_banner %}
                 <img src="{{ instance.profile_banner }}" class="img-responsive" />
+            {% else %}
+                <center>
+                    <img src="{{ instance.logo }}" class="img-responsive" />
+                </center>
             {% endif %}
             <hr>
             <center>
                 <h1>{{ instance.display_name }}</h1>
             </center>
             </br>
-            {% if instance.logo %}
-                <center>
-                    <img src="{{ instance.logo }}" class="img-responsive" />
-                </center>
-            {% endif %}
             <hr>
             <p>Language: {{ instance.language }}</p>
             <p>Views: {{ instance.views }}</p>

@@ -13,7 +13,7 @@ class Streamer(models.Model):
     name = models.CharField(max_length=120)
     logo = models.URLField()
     video_banner = models.URLField()
-    profile_banner = models.URLField()
+    profile_banner = models.URLField(null=True)
     url = models.URLField()
     views = models.IntegerField()
     followers = models.IntegerField()
