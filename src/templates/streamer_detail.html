@@ -46,26 +46,29 @@
             <center>
                 <h3>Latest Videos:</h3>
             </center>
-            {% for obj in r %}
-                <h4>{{ obj.game }}</h4>
-                <div>
-                    <div id="{{ obj|underscore:'_id' }}"></div>
-                    <script type="text/javascript">
-                        var options = {
-                            width: 854,
-                            height: 480,
-                            autoplay: false,
-                            // channel: "{{ instance.name }}",
-                            video: "{{ obj|underscore:'_id' }}"
-                        };
-                        var player = new Twitch.Player("{{ obj|underscore:'_id' }}", options);
-                        player.setVolume(0.5);
-                    </script>
-                </div>
+            {% if videos %}
+                {% for obj in r %}
+                    <h4>{{ obj.game }}</h4>
+                    <div>
+                        <div class="intrinsic-container intrinsic-container-16x9" id="{{ obj|underscore:'_id' }}"></div>
+                        <script type="text/javascript">
+                            var options = {
+                                autoplay: false,
+                                // channel: "{{ instance.name }}",
+                                video: "{{ obj|underscore:'_id' }}"
+                            };
+                            var player = new Twitch.Player("{{ obj|underscore:'_id' }}", options);
+                            player.setVolume(0.5);
+                        </script>
+                    </div>
 
-                <hr />
-            {% endfor %}
-
+                    <hr />
+                {% endfor %}
+            {% else %}
+                <p>
+                    "There are no videos or streamer made them available to subscribers only."
+                </p>
+            {% endif %}
             <hr/>
             <!-- Facebook like and share -->
             <center>

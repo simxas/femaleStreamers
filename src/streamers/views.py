@@ -100,10 +100,13 @@ def streamer_detail(request, slug):
     url = "https://api.twitch.tv/kraken/channels/{0}/videos?limit=3".format(instance.name)
     headers = {"Client-ID": settings.CLIENT_ID}
     r = requests.get(url, headers=headers).json()
-    # print(r["videos"][0])
+    videos = True
+    if r["videos"] == []:
+        videos = False
     context = {
         "instance": instance,
         "r": r["videos"],
+        "videos": videos,
     }
     return render(request, "streamer_detail.html", context)
 
@@ -122,26 +125,27 @@ def create_streamer(request):
         headers = {"Client-ID": settings.CLIENT_ID}
         r = requests.get(url, headers=headers).json()
 
-        streamer = Streamer(
-            _id = r["_id"],
-            name = r["name"],
-            logo = r["logo"],
-            video_banner = r["video_banner"],
-            profile_banner = r["profile_banner"],
-            url = r["url"],
-            views = r["views"],
-            followers = r["followers"],
-            created_at = r["created_at"],
-            display_name = r["display_name"],
-            language = r["language"],
-            broadcaster_language = r["broadcaster_language"],
-            mature = r["mature"],
-            partner = r["partner"],
-            draft = draft,
-            publish = publish,
+        obj, created = Streamer.objects.update_or_create(
+            name=r["name"],
+            defaults={
+                "_id": r["_id"],
+                "name": r["name"],
+                "logo": r["logo"],
+                "video_banner": r["video_banner"],
+                "profile_banner": r["profile_banner"],
+                "url": r["url"],
+                "views": r["views"],
+                "followers": r["followers"],
+                "created_at": r["created_at"],
+                "display_name": r["display_name"],
+                "language": r["language"],
+                "broadcaster_language": r["broadcaster_language"],
+                "mature": r["mature"],
+                "partner": r["partner"],
+                "draft": draft,
+                "publish": publish,
+            },
         )
-        # TooDo check if streamer already exist and if it is then update it insted of creating new
-        streamer.save()
 
     context = {
         "form": form,
