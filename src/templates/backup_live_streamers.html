@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load video_id %}
+
+{% block content %}
+    <h1 class="page-header">{{ title }}</h1>
+    <br />
+    <div id="page" class="fluid-container">
+        <div id="content" class="col-xs-12 col-sm-9">
+            <div class="fluid-container">
+                {% for obj in streamers %}
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="content-box-live">
+                            <h3>
+                                <a href="{% url 'streamers:stream_detail' name=obj.stream.channel.name %}">{{ obj.stream.channel.display_name }}</a>
+                            </h3>
+                            <br />
+                            <!-- <img src="{{ obj.stream.preview.medium }}" class="img-responsive" /> -->
+                            <div class="intrinsic-container intrinsic-container-4x3">
+                                <div id="{{ obj.stream.channel|underscore:'_id' }}"></div>
+                                <script type="text/javascript">
+                                    var options = {
+                                        // width: 370,
+                                        // height: 208,
+                                        autoplay: false,
+                                        channel: "{{ obj.stream.channel.name }}",
+                                        // video: "{{ obj|underscore:'_id' }}"
+                                    };
+                                    var player = new Twitch.Player("{{ obj.stream.channel|underscore:'_id' }}", options);
+                                    player.setVolume(0.5);
+                                </script>
+                            </div>
+                            <br />
+
+                            <p>Language: {{ obj.stream.channel.language }}</p>
+                            <p>Viewers: {{ obj.stream.viewers }}</p>
+                            <p>Game: {{ obj.stream.game }}</p>
+                            <p>
+                                Mature Content:
+                                {% if obj.stream.channel.mature %}
+                                    Yes
+                                {% else %}
+                                    No
+                                {% endif %}
+                            </p>
+                            <br />
+                            <br />
+                            <p>
+                                <a class="btn btn-primary" href="{% url 'streamers:stream_detail' name=obj.stream.channel.name %}">
+                                    Check details <span class="glyphicon glyphicon-chevron-right"></span>
+                                </a>
+                            </p>
+                            <hr/>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {% include 'pager.html' %}
+                </div>
+            </div>
+
+        </div>
+        {% include 'sidebar.html' %}
+        <script src="{% static 'js/main.js' %}"></script>
+    </div>
+{% endblock content %}

@@ -4,6 +4,7 @@ from django.contrib import admin
 from .views import (
     femalestreamers,
     live_streamers,
+    streamers_json,
     streamers_list,
     streamer_detail,
     stream_detail,
@@ -13,6 +14,7 @@ from .views import (
 urlpatterns = [
     url(r'^$', femalestreamers, name='femalestreamers'),
     url(r'^live/$', live_streamers, name='live_list'),
+    url(r'^list/$', streamers_json, name='streamers_json'),
     url(r'^all/$', streamers_list, name='streamers_list'),
     url(r'^create/$', create_streamer, name='create'),
     url(r'^(?P<slug>[\w-]+)/$', streamer_detail, name='detail'),

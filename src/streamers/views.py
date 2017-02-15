@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.core import serializers
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms import StreamerForm
@@ -8,6 +9,23 @@ import requests
 import json
 from django.utils import timezone
 from django.conf import settings
+import json
+
+# return all the streamers as json objects
+def streamers_json(request):
+    queryset_list = Streamer.objects.active()
+    if request.user.is_staff or request.user.is_superuser:
+        queryset_list = Streamer.objects.all()
+    data = serializers.serialize('json', queryset_list)
+
+    # for testing:
+    # channels = ["OGNGlobal", "OGN_OW", "ESL_Overwatch"]
+    channels = []
+    for channel in queryset_list:
+        channels.append(channel.name)
+
+    json_stuff = json.dumps({"channels" : channels})
+    return HttpResponse(json_stuff, content_type="application/json")
 
 def femalestreamers(request):
     context = {
@@ -18,34 +36,8 @@ def femalestreamers(request):
 
 # showing all currently live streamers
 def live_streamers(request):
-    today = timezone.now().date()
-    queryset_list = Streamer.objects.active()
-    if request.user.is_staff or request.user.is_superuser:
-        queryset_list = Streamer.objects.all()
-
-    live_streams = []
-    for streamer in queryset_list:
-        url = "https://api.twitch.tv/kraken/streams/{0}".format(streamer.name)
-        headers = {"Client-ID": settings.CLIENT_ID}
-        r = requests.get(url, headers=headers).json()
-        if r["stream"] != None:
-            live_streams.append(r)
-
-    paginator = Paginator(live_streams, 6)
-    page_request_var = "page"
-    page = request.GET.get(page_request_var)
-    try:
-        queryset = paginator.page(page)
-    except PageNotAnInteger:
-        queryset = paginator.page(1)
-    except EmptyPage:
-        queryset = paginator.page(paginator.num_pages)
-    print(queryset)
     context = {
-        "streamers": queryset,
-        "title": "Currently live streams",
-        "page_request_var": page_request_var,
-        "today": today,
+        "title": "Currently live streamers",
     }
 
     return render(request, "live_streamers.html", context)
