@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%s7z9&^_n(r3vdw89mdl&wljyweez9g1wt6ixo0946h1ku$&n+'
 # Twitch client ID
-CLIENT_ID = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx'
+CLIENT_ID = 'sl8l7iydz9pwwy14ishtgoewy1vr77'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

@@ -5,6 +5,7 @@ lib/*
 share/*
 static_cdn/*
 media_cdn/*
+nodejs_server/node_modules/*
 *.pyc
 .*
 !/.gitignore

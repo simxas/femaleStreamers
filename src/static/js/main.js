@@ -1,5 +1,17 @@
+var socket = io.connect('http://localhost:4200');
+socket.on('connect', function(data) {
+    socket.emit('join', 'Hello World from client');
+});
+
+
+
+
+
+
+
+/*
 var apiURL = "https://api.twitch.tv/kraken/streams/";
-var clientID = "my-id";
+var clientID = "sl8l7iydz9pwwy14ishtgoewy1vr77";
 
 new Vue({
     delimiters: ['<%', '%>'],
@@ -79,3 +91,4 @@ new Vue({
         }.bind(this));
     },
 });
+*/

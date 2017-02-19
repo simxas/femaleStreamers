@@ -25,6 +25,9 @@ def streamers_json(request):
         channels.append(channel.name)
 
     json_stuff = json.dumps({"channels" : channels})
+    print("=======================")
+    print("Received a request")
+    print("=======================")
     return HttpResponse(json_stuff, content_type="application/json")
 
 def femalestreamers(request):
