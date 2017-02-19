@@ -11,7 +11,7 @@ socket.on('connect', function(data) {
 
 /*
 var apiURL = "https://api.twitch.tv/kraken/streams/";
-var clientID = "sl8l7iydz9pwwy14ishtgoewy1vr77";
+var clientID = "my-id";
 
 new Vue({
     delimiters: ['<%', '%>'],
