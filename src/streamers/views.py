@@ -14,7 +14,6 @@ import json
 # return all the streamers as json objects
 def streamers_json(request, id=None):
     queryset_list = Streamer.objects.active()
-    # if request.user.is_staff or request.user.is_superuser:
 
     # pseudo additional authentication for Nodejs
     if id == "foo":

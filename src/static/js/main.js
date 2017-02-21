@@ -20,7 +20,6 @@ new Vue({
 
     computed: {
         playerIds: function () { // mapping of { channel: playerId }
-            console.log('computed function');
             return this.channels
                 .map(function (channel) {
                     return {
@@ -36,7 +35,6 @@ new Vue({
     },
 
     updated: function () {
-        console.log("somesdsd");
         this.channels.forEach(function (channel) {
             var options = {
                 width: 200,

@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 var request = require('request');
 
 var apiURL = "https://api.twitch.tv/kraken/streams/";
-var clientID = "xxxxxxxxxxxxxxx";
+var clientID = "x";
 
 app.use(express.static(__dirname + '/bower_components'));
 
@@ -22,7 +22,6 @@ io.on('connection', function(client) {
             request('http://localhost:8888/streamers/list/foo/', function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     var channels = JSON.parse(body);
-                    console.log(channels.channels);
                     resolve(channels.channels);
                 }else{
                     console.log(error);
@@ -43,7 +42,6 @@ io.on('connection', function(client) {
                     function callback(error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var json = JSON.parse(body);
-                            // console.log(json);
                             if (json.stream == null) {
                                 resolve([ channel, { streams: null } ]);
                             } else { // channel online
@@ -63,17 +61,13 @@ io.on('connection', function(client) {
                     if(channelData[1].streams !== null) {
                         client.emit('channels', channelData[0]);
                     }
-                    // return channelData[1].streams !== null;
                 })
                 .map(function (channelData) {
                     return channelData[0];
                 });
         })
         .then(function (channels) {
-            // this.channels = channels;
-            // console.log('Online channels');
             // console.log(channels);
-            // client.emit('channels', channels);
         });
     });
 
