@@ -12,10 +12,14 @@ from django.conf import settings
 import json
 
 # return all the streamers as json objects
-def streamers_json(request):
+def streamers_json(request, id=None):
     queryset_list = Streamer.objects.active()
-    if request.user.is_staff or request.user.is_superuser:
+    # if request.user.is_staff or request.user.is_superuser:
+
+    # pseudo additional authentication for Nodejs
+    if id == "foo":
         queryset_list = Streamer.objects.all()
+
     data = serializers.serialize('json', queryset_list)
 
     # for testing:

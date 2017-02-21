@@ -1,61 +1,19 @@
 var socket = io.connect('http://localhost:4200');
-socket.on('connect', function(data) {
-    socket.emit('join', 'Hello World from client');
-});
 
-
-
-
-
-
-
-/*
-var apiURL = "https://api.twitch.tv/kraken/streams/";
-var clientID = "my-id";
 
 new Vue({
     delimiters: ['<%', '%>'],
     el: '#page',
 
     created: function () {
-        var ajaxRequest = new Promise(function (resolve) {
-            jQuery.when(
-                jQuery.getJSON("/streamers/list/")
-            ).done( function(json) {
-                resolve(json.channels);
+        socket.on('connect', function(data) {
+            socket.emit('join', 'Hello World from client');
+            socket.on('channels', function(data) {
+                this.channels = data;
+                console.log('channels from created function:');
+                console.log(this.channels);
             });
         });
-        ajaxRequest.then(function (channels) {
-            return Promise.all(channels.map(function (channel) {
-                return new Promise(function (resolve) {
-                    var data = $.ajax({
-                        url: "https://api.twitch.tv/kraken/streams/" + channel,
-                        headers: { 'Client-ID': clientID },
-                        dataType: "json",
-                        success: function(json) {
-                            console.log(json);
-                            if (json.stream == null) {
-                                resolve([ channel, { streams: null } ]);
-                            } else { // channel online
-                                resolve([ channel, { streams: 'something' } ]);
-                            }
-                        },
-                    });
-                })
-            }))
-        })
-        .then(function (channelsData) {
-            return channelsData
-                .filter(function (channelData) {
-                    return channelData[1].streams !== null;
-                })
-                .map(function (channelData) {
-                    return channelData[0];
-                });
-        })
-        .then(function (channels) {
-            this.channels = channels;
-        }.bind(this));
     },
 
     data: {
@@ -64,6 +22,7 @@ new Vue({
 
     computed: {
         playerIds: function () { // mapping of { channel: playerId }
+            console.log('computed function');
             return this.channels
                 .map(function (channel) {
                     return {
@@ -79,6 +38,7 @@ new Vue({
     },
 
     updated: function () {
+        console.log("somesdsd");
         this.channels.forEach(function (channel) {
             var options = {
                 width: 200,
@@ -91,4 +51,3 @@ new Vue({
         }.bind(this));
     },
 });
-*/
