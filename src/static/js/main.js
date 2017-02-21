@@ -8,12 +8,10 @@ new Vue({
     created: function () {
         socket.on('connect', function(data) {
             socket.emit('join', 'Hello World from client');
-            socket.on('channels', function(data) {
-                this.channels = data;
-                console.log('channels from created function:');
-                console.log(this.channels);
-            });
         });
+        socket.on('channels', function(data) {
+            this.channels.push(data);
+        }.bind(this));
     },
 
     data: {

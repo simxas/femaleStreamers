@@ -5,7 +5,7 @@ var io = require('socket.io')(server);
 var request = require('request');
 
 var apiURL = "https://api.twitch.tv/kraken/streams/";
-var clientID = "xxxxxxxxxxxxxxxxxxxx";
+var clientID = "xxxxxxxxxxxxxxx";
 
 app.use(express.static(__dirname + '/bower_components'));
 
@@ -18,7 +18,6 @@ io.on('connection', function(client) {
     // trying to access my Django backend to get all the channel names
     // TODO find a way to authenticate myself in order to get all the channel names from database
     client.on('join', function(data) {
-        console.log(data);
         var djangoRequest = new Promise(function (resolve) {
             request('http://localhost:8888/streamers/list/foo/', function (error, response, body) {
                 if (!error && response.statusCode == 200) {
@@ -44,7 +43,7 @@ io.on('connection', function(client) {
                     function callback(error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var json = JSON.parse(body);
-                            console.log(json);
+                            // console.log(json);
                             if (json.stream == null) {
                                 resolve([ channel, { streams: null } ]);
                             } else { // channel online
@@ -60,7 +59,11 @@ io.on('connection', function(client) {
         .then(function (channelsData) {
             return channelsData
                 .filter(function (channelData) {
-                    return channelData[1].streams !== null;
+                    console.log(channelData);
+                    if(channelData[1].streams !== null) {
+                        client.emit('channels', channelData[0]);
+                    }
+                    // return channelData[1].streams !== null;
                 })
                 .map(function (channelData) {
                     return channelData[0];
@@ -68,9 +71,9 @@ io.on('connection', function(client) {
         })
         .then(function (channels) {
             // this.channels = channels;
-            console.log('Online channels');
-            console.log(channels);
-            client.emit('channels', channels);
+            // console.log('Online channels');
+            // console.log(channels);
+            // client.emit('channels', channels);
         });
     });
 
