@@ -35,19 +35,19 @@ class Streamer(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("streamers:detail", kwargs={"slug": self.slug})
+        return reverse('streamers:detail', kwargs={'slug': self.slug})
 
     class Meta:
-        ordering = ["-timestamp", "-updated"]
+        ordering = ['-timestamp', '-updated']
 
 def create_slug(instance, new_slug=None):
     slug = slugify(instance.name)
     if new_slug is not None:
         slug = new_slug
-    qs = Streamer.objects.filter(slug=slug).order_by("-id")
+    qs = Streamer.objects.filter(slug=slug).order_by('-id')
     exists = qs.exists()
     if exists:
-        new_slug = "{0}-{1}".format(slug, qs.first().id)
+        new_slug = '{0}-{1}'.format(slug, qs.first().id)
         return create_slug(instance, new_slug=new_slug)
     return slug
 
